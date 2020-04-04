@@ -181,14 +181,14 @@ namespace JetBrains_ILDebugger
                 case TokenType.VAR:
                     if (parser.getNextToken().type == TokenType.LPAR)
                     {
-                        FunctionNode fn = (FunctionNode)parseFunct(token);
-                        fn.funcIdentification(parser.tmp_compile);
+                        FunctionNode fn = (FunctionNode)parser.parseFunct(token);
+                        fn.funcIdentification(parser._compile);
                         return fn;
                     }
                     else
                     {
                         parser.StepBack();
-                        VarNode var = new VarNode(token.type, token.name);
+                        VarNode var = new VarNode(token.name);
                         // should be handling exceptions
                         parser.symboltable.Add(var);
                         return var;
@@ -204,34 +204,7 @@ namespace JetBrains_ILDebugger
             return null; // error handling
         }
 
-        public ExprNode parseFunct(Token token)
-        {
-            List<ExprNode> args = parseFunctionArgs();
-            return new FunctionNode(token.name, args: args);
-        }
-
-        public List<ExprNode> parseFunctionArgs()
-        { // в аргументах тоже не должно быть void-ов
-            Token tok = parser.getNextToken();
-            List<ExprNode> args = new List<ExprNode>();
-            while (tok.type == TokenType.NUM || tok.type == TokenType.VAR)
-            {
-                ExprNode curNode = Fact(tok);
-                if (curNode is FunctionNode o && o.return_type == TokenType.VOID)
-                {
-                    // exception handling 
-                    Console.WriteLine("Here can't be argument with void type");
-                    return null; 
-                }
-                args.Add(curNode);
-                parser.getNextToken();
-                if (parser.curToken.type == TokenType.COMMA)
-                    parser.getNextToken();
-                tok = parser.curToken;
-                // else return ERROR;
-            }
-            return args;
-        }
+        
 
         public ExprNode expr_minus(Token token, ExprNode op)
         {

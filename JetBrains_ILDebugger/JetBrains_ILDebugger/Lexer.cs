@@ -34,11 +34,13 @@ namespace JetBrains_ILDebugger
             getNextChar();
             while (inRange())
             {
-                if (curCh == ' ') { getNextChar(); continue; }
+                if (curCh == ' ' || curCh == '\r' || curCh == '\t' || curCh == '\n') { getNextChar(); continue; }
                 else if (Char.IsNumber(curCh)) tokenizeNumber();
-                else if (Char.IsLetter(curCh)) tokenizeVariable();
+                else if (Char.IsLetter(curCh)) tokenizeWord();
                 else if (curCh == '(') { tokens.Add(new Token("(", TokenType.LPAR)); getNextChar(); }
                 else if (curCh == ')') { tokens.Add(new Token(")", TokenType.RPAR)); getNextChar(); }
+                else if (curCh == '{') { tokens.Add(new Token("{", TokenType.LBRA)); getNextChar(); }
+                else if (curCh == '}') { tokens.Add(new Token("}", TokenType.RBRA)); getNextChar(); }
                 else if (curCh == ',') { tokens.Add(new Token(",", TokenType.COMMA)); getNextChar(); }
                 else if (curCh == ';') { tokens.Add(new Token(";", TokenType.SEMICOLON)); getNextChar(); }
                 else
@@ -103,7 +105,7 @@ namespace JetBrains_ILDebugger
 
         }
 
-        public void tokenizeVariable()
+        public void tokenizeWord()
         {
             StringBuilder word = new StringBuilder();
             Token thisToken = null;
@@ -112,7 +114,13 @@ namespace JetBrains_ILDebugger
                 word.Append(curCh);
                 getNextChar();
             }
-            thisToken = new Token(word.ToString(), TokenType.VAR);
+            string wordS = word.ToString();
+            if (wordS == "if") thisToken = new Token(wordS, TokenType.IF);
+            else if (wordS == "else") thisToken = new Token(wordS, TokenType.ELSE);
+            else if (wordS == "return") thisToken = new Token(wordS, TokenType.RETURN);
+            else if (wordS == "var") thisToken = new Token(wordS, TokenType.DECLARE_VAR);
+            else if (wordS == "break") thisToken = new Token(wordS, TokenType.BREAK);
+            else thisToken = new Token(wordS, TokenType.VAR);
             tokens.Add(thisToken);
         }
 
@@ -158,7 +166,7 @@ namespace JetBrains_ILDebugger
         ASSIGN,
 
         DECLARE_VAR,
-
+  
         SEMICOLON, COMMA,
 
         LONG, VOID,

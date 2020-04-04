@@ -15,14 +15,14 @@ namespace JetBrains_ILDebugger
         static long a = 3;
         static long b = 2;
 
-        static public long Counting (long a, long b)
+        static public long Counting(long a, long b)
         {
             return a + b * 2;
         }
 
         static public void PrintText(long a)
         {
-            Console.WriteLine(a+1);
+            Console.WriteLine(a + 1);
         }
 
         static void Main(string[] args)
@@ -39,7 +39,12 @@ namespace JetBrains_ILDebugger
             string vartext = @"(1+2)*x - (3-y) + t+2*z"; // -1 wrong, 5 norm
             string proga = @"var a,b,c; 
                              a=2; b=3;
-                             c = a*b;";
+                             c = a*b;
+                            if(a+b-c*2){
+                            return a;}
+                            else {
+                            return b;
+                            }";
             //Lexer lexer = new Lexer(vartext);
             //List<Token> toks = lexer.Tokenization();
             //Parser parser = new Parser(toks);
@@ -48,12 +53,22 @@ namespace JetBrains_ILDebugger
             //Console.WriteLine(output);
             //cc.seekFunc("asd");
             //var result = cc.Compile(func_long);
-            var result = cc.Compile(normtext);
-            Console.WriteLine(result.Invoke(1,2,3));
-           
+            var result = cc.Compile(proga);
+            Console.WriteLine(result.Invoke(1, 2, 3));
+
             // here I will call delegate of DynamicMethod in ExprNode
 
             Console.ReadKey();
+        }
+    }
+
+    static class ErrorMsg
+    {
+        private static string text;
+        
+        static public void ThrowError(string text)
+        {
+            Console.WriteLine(text);
         }
     }
 

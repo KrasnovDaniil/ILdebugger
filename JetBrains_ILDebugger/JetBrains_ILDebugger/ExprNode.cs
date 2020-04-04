@@ -49,14 +49,16 @@ namespace JetBrains_ILDebugger
 
     class VarNode : ExprNode
     {
-        
+        private ExprNode val;
         TokenType type;
-        public VarNode(TokenType type, string name) : base(type, name)
+
+        public VarNode(string name) : base(TokenType.VAR, name)
         {
-            this.type = type;
             this.name = name;
             //val = Convert.ToInt32(name);
         }
+
+        public void setValue(ExprNode value) { val = value; }
 
         public override void CodeGen(CallCompile cc)
         {
@@ -216,6 +218,11 @@ namespace JetBrains_ILDebugger
             this.body = body;
             this._else = _else;
         }
+
+        public override void CodeGen(CallCompile cc)
+        {
+            base.CodeGen(cc);
+        }
     }
 
     class ElseNode : ExprNode
@@ -225,6 +232,45 @@ namespace JetBrains_ILDebugger
         {
             this.body = body;
         }
+        public override void CodeGen(CallCompile cc)
+        {
+            base.CodeGen(cc);
+        }
     }
+
+    class ConnectingNode : ExprNode
+    {
+        public ExprNode leftPart, rightPart;
+        public ConnectingNode(ExprNode left, ExprNode right) : base(TokenType.SEMICOLON, "Connection")
+        {
+            leftPart = left;
+            rightPart = right;
+        }
+
+        public override void CodeGen(CallCompile cc)
+        {
+            if (leftPart != null) leftPart.CodeGen(cc);
+            if (rightPart != null) rightPart.CodeGen(cc);
+        }
+    }
+
+    class OperationNode : ExprNode
+    {
+        private TokenType type;
+        private ExprNode expr;
+        public OperationNode(TokenType type, ExprNode expr):base(type, null)
+        {
+            this.type = type;
+            this.expr = expr;
+        }
+
+        public override void CodeGen(CallCompile cc)
+        {
+            base.CodeGen(cc);
+        }
+
+    }
+
+
 
 }
