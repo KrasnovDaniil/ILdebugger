@@ -46,7 +46,6 @@
     <Compile Include="ArithmeticRules.cs" />
     <Compile Include="CallCompile.cs" />
     <Compile Include="ExprNode.cs" />
-    <Compile Include="ForTesting.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />

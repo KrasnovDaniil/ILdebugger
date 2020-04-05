@@ -37,7 +37,6 @@ namespace JetBrains_ILDebugger
                 case TokenType.LPAR:
                 case TokenType.NUM:
                 case TokenType.VAR:
-                    // expr может начинаться с открывающейся скобки, числа ,переменной или функции
                     res = Expr_plus(token);
                     break;
                 default:

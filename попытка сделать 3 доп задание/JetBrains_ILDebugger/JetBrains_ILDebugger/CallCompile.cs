@@ -37,7 +37,7 @@ namespace JetBrains_ILDebugger
             gen.EmitWriteLine(x);
         }
         
-        public CompileResult CompileAllExprNodes(ExprNode root) // тот самый метод Compile()
+        public CompileResult CompileAllExprNodes(ExprNode root) 
         {
             root.CodeGen(this);
             gen.Emit(OpCodes.Ret);
@@ -78,7 +78,7 @@ namespace JetBrains_ILDebugger
         {
             res_func = null;
             foreach (MethodInfo mi in sMethods)
-            {   // нужно обработать ошибку args = null, она возникает, когда один из аргументов имеет тип void
+            {
                 if (mi.Name == func.name && mi.GetParameters().Length == func.args.Count)
                 {
                     res_func = mi;
@@ -87,29 +87,8 @@ namespace JetBrains_ILDebugger
             }
             return false;
 
-            foreach (MethodInfo fi in sMethods)
-            {
-                Console.WriteLine(fi.Name);
-                Console.WriteLine("return type " + fi.ReturnType);
-                foreach (ParameterInfo pi in fi.GetParameters()) // вывод параметров статического метода 
-                {
-                    Console.WriteLine(pi.ParameterType); // могу сделать проверку сигнатур (достаточно списока параметров)
-                    // объявленного метода и вызванного метода в expressions 
-                }
-            }
-            return false;
+           
         }
-
-        /*
-         * Задачи на 31.03.2020
-          Сделать доп задание 1 - внедрение функций:
-            * проверить на соответствие кол-во (и типы параметров) у объявленных и вызываемых методов
-            * добавить обработку этих же функций в парсер: оперделять их на этапе лексинга или парсинга?
-          другое:
-            исправить грамматику: чтобы создавала правильное АСТ
-         */
-
-
 
     }
 }
