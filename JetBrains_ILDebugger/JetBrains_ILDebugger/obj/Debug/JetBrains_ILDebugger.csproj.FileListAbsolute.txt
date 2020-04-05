@@ -1,7 +1,0 @@
-C:\Users\Daniil\source\repos\JetBrains_ILDebugger\JetBrains_ILDebugger\obj\Debug\JetBrains_ILDebugger.csproj.CoreCompileInputs.cache
-C:\Users\Daniil\source\repos\JetBrains_ILDebugger\JetBrains_ILDebugger\bin\Debug\JetBrains_ILDebugger.exe.config
-C:\Users\Daniil\source\repos\JetBrains_ILDebugger\JetBrains_ILDebugger\bin\Debug\JetBrains_ILDebugger.exe
-C:\Users\Daniil\source\repos\JetBrains_ILDebugger\JetBrains_ILDebugger\bin\Debug\JetBrains_ILDebugger.pdb
-C:\Users\Daniil\source\repos\JetBrains_ILDebugger\JetBrains_ILDebugger\obj\Debug\JetBrains_ILDebugger.exe
-C:\Users\Daniil\source\repos\JetBrains_ILDebugger\JetBrains_ILDebugger\obj\Debug\JetBrains_ILDebugger.pdb
-C:\Users\Daniil\source\repos\JetBrains_ILDebugger\JetBrains_ILDebugger\obj\Debug\JetBrains_ILDebugger.csprojAssemblyReference.cache
