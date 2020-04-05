@@ -27,7 +27,7 @@ namespace JetBrains_ILDebugger
             getFieldsMethodsInfo();
         }
 
-        public CompileResult CompileAllExprNodes(ExprNode root) // тот самый метод Compile()
+        public CompileResult CompileAllExprNodes(ExprNode root) 
         {
             root.CodeGen(this);
             gen.Emit(OpCodes.Ret);

@@ -37,7 +37,6 @@ namespace JetBrains_ILDebugger
                 case TokenType.LPAR:
                 case TokenType.NUM:
                 case TokenType.VAR:
-                    // expr может начинаться с открывающейся скобки или числа 			
                     res = Expr_plus(token);
                     break;
                 default:
@@ -97,7 +96,6 @@ namespace JetBrains_ILDebugger
                     switch (op.type) 
                     {
                         case TokenType.MINUS:
-                            // посмотрю сколько минусов впереди
                             if (parser.StepNext(2).type == TokenType.MINUS)
                             {
                                 Token t_past = parser.StepBack();

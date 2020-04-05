@@ -29,11 +29,7 @@ namespace JetBrains_ILDebugger
         static void Main(string[] args)
         {
             CallCompile cc = new CallCompile();
-            string ar_gram = @"10+3-4-2+5+9"; // = 21
             string text = @"a*(x+y)+z*b*asd"; // = 13
-            string text1 = @"123+043*14001";
-            string normtext = @"(1+2)*8 - 3-9 + 4*5"; // 
-            string t = @"1+2-3-4-12/3/4 * 3*2+(7*2/7)*15+18"; // = 8
             string vartext = @"(1+2)*x - (3-y) + t+2*z"; // = 18 
             
             var result = cc.Compile(vartext);

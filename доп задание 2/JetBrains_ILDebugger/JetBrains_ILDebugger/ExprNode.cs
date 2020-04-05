@@ -19,54 +19,34 @@ namespace JetBrains_ILDebugger
             this.type = type;
             this.name = name;
         }
-
-
-        //static public void print()
-        //{
-        //    LocalBuilder result = comp.gen.DeclareLocal(typeof(int));
-        //    comp.gen.Emit(OpCodes.Stloc, result);
-        //    comp.gen.EmitWriteLine(result);
-        //    comp.gen.Emit(OpCodes.Ret);
-        //    comp.dyn.Invoke(null, null);
-        //}
-
-        //static public object result()
-        //{
-        //    comp.gen.Emit(OpCodes.Ret);
-        //    return dyn.Invoke(null, null);
-        //}
-
+        
         virtual public string printAll()
         {
             return name;
         }
-
+        /// <summary>
+        /// метод генерации IL кода для каждой вершины в АСТ
+        /// </summary>
         virtual public void CodeGen(CallCompile cc)
         {
-             // here will be IL code comp.generation...(the most interesting part)
         }
     }
 
+    // Переменные
     class VarNode : ExprNode
     {
-        private ExprNode val;
+        private ExprNode val; 
         TokenType type;
 
         public VarNode(string name) : base(TokenType.VAR, name)
         {
             this.name = name;
-            //val = Convert.ToInt32(name);
         }
 
         public void setValue(ExprNode value) { val = value; }
 
         public override void CodeGen(CallCompile cc)
         {
-            /* 18:10  30.03.2020
-            Доп задание 2
-            Реализовал работу со статическими переменными класса Program так, чтобы они использовались в вычилениях
-            так же как и обычные переменные
-            */
 
             LocalBuilder x1 = cc.gen.DeclareLocal(typeof(long));
 
@@ -74,17 +54,16 @@ namespace JetBrains_ILDebugger
             if      (name == "x") cc.gen.Emit(OpCodes.Ldarg_0);
             else if (name == "y") cc.gen.Emit(OpCodes.Ldarg_1);
             else if (name == "z") cc.gen.Emit(OpCodes.Ldarg_2);
-            else if (cc.seekVar(name, out var))
-                cc.gen.Emit(OpCodes.Ldc_I8, var);
-            else  // нужно поместить вторым аргументом поле из массива из getFieldsInfo() 30.03.2020
-                  //else cc.gen.Emit(OpCodes.Ldsfld,);
+            else if (cc.seekVar(name, out var)) // найти значение переменной в статических поляк класса Program
+                cc.gen.Emit(OpCodes.Ldc_I8, var); // если есть, то положить её значение на стек
+            else  
                 Console.WriteLine("wrong variable");
         }
     }
 
+    // Числа 
     class NumberNode : ExprNode
     {
-        //public int val { get; private set; }
         public NumberNode(TokenType type, string name, long val) : base(type, name)
         {
             this.val = val;
@@ -99,6 +78,7 @@ namespace JetBrains_ILDebugger
         }
     }
 
+    // Арифметические операции
     class BinaryOperation :ExprNode
     {
         TokenType opName;
@@ -115,15 +95,10 @@ namespace JetBrains_ILDebugger
             return "(" + op1.printAll() + " " + opName.ToString() + " " + op2.printAll() + ")";
         }
 
-        public void ComputingValue()
-        {
-            /// computiong: val = op1 opName op2
-        }
 
         public override void CodeGen(CallCompile cc)
         {
 
-            // можно убрать проверку на null, так как исключение бцдет выброшено на этапе парсинга
             if (!(op1 is FunctionNode obj1 && obj1.return_type == TokenType.VOID)) op1.CodeGen(cc);
             else
             {
@@ -140,6 +115,7 @@ namespace JetBrains_ILDebugger
             }
             GenILOps(cc);
         }
+
         public void GenILOps(CallCompile cc)
         {
             switch (opName)
@@ -156,8 +132,7 @@ namespace JetBrains_ILDebugger
         }   
     }
 
-    // Идея. Проверять функцию на этапе парсинга таким образом: если среди аргументов встретился тип void (функция типа void), то
-    // выбрасывать исключение о неправильном параметре
+    // Функции
     class FunctionNode : ExprNode
     {
         public List<ExprNode> args { get; private set; }
@@ -187,18 +162,10 @@ namespace JetBrains_ILDebugger
 
         }
 
-        // Найти эту функцию в списке объявленных статических методов класса Program.cs
         public override void CodeGen(CallCompile cc)
-        { /* метод CodeGen(CallCompile cc) генерирует IL-код ПРАВИЛЬНОЙ функции, то есть ту, которая не имеет во входных 
-             параметрах агрумент типа void
-          */
+        { 
             GenerateArgs(cc);
-            //selfMethod.Invoke(p, new object[] { , (long)args[1].val });
             cc.gen.Emit(OpCodes.Call, selfMethod);
-
-            //cc.gen.Emit(OpCodes.Ldc_I8,args[0].val);
-            //cc.gen.Emit(OpCodes.Ldc_I8,args[1].val);
-            //cc.gen.Emit(OpCodes.Add);
         }
 
         public void GenerateArgs(CallCompile cc)
@@ -209,6 +176,7 @@ namespace JetBrains_ILDebugger
 
     }
 
+    // Нода для выражения if
     class IfNode : ExprNode
     {
         private ExprNode cond, body, _else;
@@ -225,6 +193,7 @@ namespace JetBrains_ILDebugger
         }
     }
 
+    // нода для else, но можно обойтись без неё
     class ElseNode : ExprNode
     {
         private ExprNode body;
@@ -238,6 +207,7 @@ namespace JetBrains_ILDebugger
         }
     }
 
+    // соединяющая вершина
     class ConnectingNode : ExprNode
     {
         public ExprNode leftPart, rightPart;
@@ -254,6 +224,7 @@ namespace JetBrains_ILDebugger
         }
     }
 
+    // нода для оператора return
     class OperationNode : ExprNode
     {
         private TokenType type;

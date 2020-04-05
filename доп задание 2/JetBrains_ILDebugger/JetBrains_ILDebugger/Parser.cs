@@ -15,13 +15,6 @@ namespace JetBrains_ILDebugger
         public CallCompile _compile;
         ArithmeticRules ar;
 
-        enum PTypes
-        {
-            VAR, NUM, 
-            MATH_OPERATION,
-            FUNCTION
-        }
-
         public Parser(List<Token> tokens, CallCompile tmp_compile)
         {
             this.tokens = tokens;
@@ -200,15 +193,7 @@ namespace JetBrains_ILDebugger
         }
         // << BLOCK PARSING
 
-        /*
-         Задачи на 04.04.2020 сб
-         * добавить в грамматику логические операции
-         
-         */
-        
-
-
-
+    
 
 
 
