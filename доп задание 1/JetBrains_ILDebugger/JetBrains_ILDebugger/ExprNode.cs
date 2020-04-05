@@ -156,9 +156,7 @@ namespace JetBrains_ILDebugger
 
         // Найти эту функцию в списке объявленных статических методов класса Program.cs
         public override void CodeGen(CallCompile cc)
-        { /* метод CodeGen(CallCompile cc) генерирует IL-код ПРАВИЛЬНОЙ функции, то есть ту, которая не имеет во входных 
-             параметрах агрумент типа void
-          */
+        { 
             GenerateArgs(cc);
             cc.gen.Emit(OpCodes.Call, selfMethod);
         }

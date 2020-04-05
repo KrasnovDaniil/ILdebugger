@@ -9,16 +9,21 @@ namespace JetBrains_ILDebugger
 
     class ArithmeticRules
     {
-        /*
+        /* Грамматика 
             Stmt -> Expr_plus| e
             Expr_plus -> Expr_minus| Expr_minus + Expr_plus| e
             Expr_minus -> Term_mul| Expr_minus - Term_mul| e
             Term_mul -> Term_div| Term_div * Term_div| e
             Term_div -> Fact| Term_div / Term_mul| e
             Fact -> NUM| ( Expr_plus )| VAR| Function
+
+            Несмотря на то, что сначала идея была написать LL(1) парсер, 
+            правила Expr_minus и Term_div имеют левую рекурсию, чтобы сделать АСТ более лёгким для генерации кода, но
+            это плохо отразилось в коде, и похоже это не соответствует принципам LL(k) парсеров
         */
 
         Parser parser;
+
         public ArithmeticRules(Parser parser)
         {
             this.parser = parser;
@@ -26,9 +31,13 @@ namespace JetBrains_ILDebugger
 
         public ExprNode ParseArithmeticExpression()
         {
-            return Stmt(parser.curToken);
+            return Stmt(parser.curToken); 
         }
 
+        /// <summary>
+        /// выражение может начинаться с переменной, числа, функции и отк. скобки
+        /// вызывается метод Expr_plus, чтобы операция сложения была выше в АСТ, чем операция вычитания
+        /// </summary>
         public ExprNode Stmt(Token token)
         {
             ExprNode res = null;
@@ -37,7 +46,6 @@ namespace JetBrains_ILDebugger
                 case TokenType.LPAR:
                 case TokenType.NUM:
                 case TokenType.VAR:
-                    // expr может начинаться с открывающейся скобки или числа 			
                     res = Expr_plus(token);
                     break;
                 default:
@@ -97,7 +105,7 @@ namespace JetBrains_ILDebugger
                     switch (op.type)
                     {
                         case TokenType.MINUS:
-                            // посмотрю сколько минусов впереди
+                            // левая рекурсия
                             if (parser.StepNext(2).type == TokenType.MINUS)
                             {
                                 Token t_past = parser.StepBack();
@@ -222,7 +230,9 @@ namespace JetBrains_ILDebugger
         }
 
 
-
+        /// <summary>
+        /// разбор выражений со знаком "-"
+        /// </summary>
         public ExprNode expr_minus(Token token, ExprNode op)
         {
             BinaryOperation bo;
